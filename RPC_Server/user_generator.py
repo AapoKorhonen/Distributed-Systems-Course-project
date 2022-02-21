@@ -1,0 +1,2 @@
+class UserGenerator:
+    pass
