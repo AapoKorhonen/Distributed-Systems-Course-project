@@ -1,0 +1,38 @@
+# https://www.electricmonk.nl/log/2018/06/02/ssl-tls-client-certificate-verification-with-python-v3-4-sslcontext/
+# https://www.geeksforgeeks.org/practical-uses-of-openssl-command-in-linux/
+
+# create server certificate
+openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out server.crt
+
+# create client certificate
+openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout client.key -out client.crt
+
+
+# Create server PEM file and private key
+openssl req -x509 -sha512 -nodes -days 730 -newkey rsa:2048 -keyout server.key -out server.pem
+
+# Create client PEM file
+openssl req -x509 -sha512 -nodes -days 730 -newkey rsa:2048 -out client.pem
+
+# print details of a pem
+openssl x509 -in server.pem -noout -text
+
+
+openssl x509 -req -in server.csr \
+        -extfile 'subjectAltName=IP:127.0.0.1' \
+        -CA ca.crt \
+        -CAkey ca.key \
+        -CAcreateserial -out server.crt \
+        -days 365
+
+
+openssl x509 -req -in server.csr \
+        -extfile <(printf "subjectAltName=IP:127.0.0.1") \
+        -CA ca.crt \
+        -CAkey ca.key \
+        -CAcreateserial -out server.crt \
+        -days 365
+
+
+
+
