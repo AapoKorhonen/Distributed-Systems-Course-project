@@ -93,8 +93,8 @@ class RPCServer:
 if __name__ == '__main__':
     """Server can be run only directly calling the 
     RPC_Server class."""
-    pem = '/home/reijo/Desktop/DS_project/Certificates/server.pem'
-    key = '/home/reijo/Desktop/DS_project/Certificates/server.key'
+    pem = 'Certificates/server.pem'
+    key = 'Certificates/server.key'
 
     server = RPCServer("database.db", pem, key)
     server._main()
