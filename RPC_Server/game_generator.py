@@ -1,2 +1,1 @@
-class GameGenerator:
-    pass
+""""""
