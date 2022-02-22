@@ -2,7 +2,6 @@
 This creates connection for the client.
 """
 
-from pydoc import cli
 import socket
 import ssl
 
@@ -44,6 +43,15 @@ class Client:
 
     def _main(self):
         try:
+            # simple example without client authentication
+            #hostname = 'www.python.org'
+            #context = ssl.create_default_context()
+
+            #with socket.create_connection((hostname, 443)) as sock:
+            #    with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+            #        print(ssock.version())
+
+
             client = Client(self._client_pem)
             hostname = '127.0.0.1'
             port = 8001
