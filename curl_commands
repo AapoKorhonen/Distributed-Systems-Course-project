@@ -1,0 +1,18 @@
+# USER registration - text/plain
+curl -k -d 'Reijo:minun_salasana' https://localhost:8001/registration -H "Content-Type: text/plain" --trace-ascii out.txt
+
+# USER registration - application/json
+
+curl -k -d "testuser.json" https://localhost:8001/registration -H "Content-Type: application/json"
+
+curl -k -d "{"username": "username","password": "password","email": "reijo92@gmail.com"}" https://localhost:8001/registration -H "Content-Type: application/json"
+
+
+# GET - text/plain
+curl -k -d 'this a message' -H "Content-Type: text/plain" localhost:8001/chat
+
+# GET - messages from database
+curl -u Reijo:salasana -k https://localhost:8001/chat -H "Content-Type: application/json" "If-Modified-Since: 2020-12-21T07:57:47.123Z" --trace-ascii out.txt
+
+# GET - application/json
+curl -u Reijo:salasana -k -d "testmessage.json" https://localhost:8001/chat -H "Content-Type: application/json" --trace-ascii out.txt
