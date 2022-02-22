@@ -87,6 +87,7 @@ class RPCServer:
         server = RPCServer(self._database, self._pem, self._key)
         server.log("Creating socket connection...")
         server._create_socket()
+        server.log("Creating game handler...")
         
 
 
