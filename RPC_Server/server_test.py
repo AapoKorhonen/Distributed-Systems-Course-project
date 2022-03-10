@@ -5,12 +5,15 @@
 # Python 3 server example
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
+import game_generator
 
 hostName = "localhost"
 serverPort = 8080
 
 class MyServer(BaseHTTPRequestHandler):
+    
     def do_GET(self):
+ 
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
@@ -21,7 +24,7 @@ class MyServer(BaseHTTPRequestHandler):
         self.wfile.write(bytes("</body></html>", "utf-8"))
 
 if __name__ == "__main__":        
-    webServer = HTTPServer((hostName, serverPort), MyServer)
+    webServer = HTTPServer((hostName, serverPort), game_generator.GameGenerator)
     print("Server started http://%s:%s" % (hostName, serverPort))
 
     try:

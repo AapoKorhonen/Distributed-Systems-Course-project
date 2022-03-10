@@ -1,5 +1,4 @@
 
-
 class Game:
 
     def __init__(self, p1, p2):
@@ -47,5 +46,4 @@ class Game:
 
         
         return self.outcome
-        
-  
+
