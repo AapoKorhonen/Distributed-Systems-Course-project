@@ -10,7 +10,7 @@ import datetime
 import socket
 import ssl
 import error_handler
-
+import game_generator
 
 class RPCServer:
     def __init__(self, database, pem, key):
@@ -32,7 +32,9 @@ class RPCServer:
                     # Keep accepting connections from clients
                     with context.wrap_socket(sock, server_side=True) as ssock:
                         # (clientConnection, clientAddress) = serverSocket.accept()
-                        conn, addr = ssock.accept()
+                        print("kakkapaa")
+                        conn, addr = ssock.accept() #Tässä on homma
+                        print("pylly")
                         print(conn.getpeercert)
                         # Send current server time to the client
                         serverTimeNow = "%s"%datetime.datetime.now()
@@ -88,6 +90,7 @@ class RPCServer:
         server.log("Creating socket connection...")
         server._create_socket()
         server.log("Creating game handler...")
+       
         
 
 
