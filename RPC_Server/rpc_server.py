@@ -13,6 +13,7 @@ import error_handler
 import database
 import communication_handler
 import game_generator
+import threading
 
 class RPCServer:
     def __init__(self, pem, key):
@@ -20,32 +21,25 @@ class RPCServer:
         self._pem = pem
         self._key = key
         self._error = error_handler.ErrorHandler()
+    
+    def _handle_thread(self, connection, address):
+        # give here communication handler to the client
+        communication_handler.CommunicationHandler(connection, address)
+        # this works!!!!!!!!!!!!!!!!!!!!!!!
 
     def _create_socket(self): # leading '_' in the method name distinguishes 
                                 # private and public methods
         try:
             hostname = '127.0.0.1' # loopback address
-            context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-            context.load_cert_chain(server._pem, server._key) # give certificate and private key
 
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
                 sock.bind((hostname, 8001))
                 sock.listen(5)
                 while True:
                     # Keep accepting connections from clients
-                    with context.wrap_socket(sock, server_side=True) as ssock:
-                        # (clientConnection, clientAddress) = serverSocket.accept()
-                        conn, addr = ssock.accept()
-                        # give here communication handler to the client
-                        communication_handler.CommunicationHandler(conn, addr)
-
-                        #print(conn.getpeercert)
-                        # Send current server time to the client
-                        #serverTimeNow = "%s"%datetime.datetime.now()
-                        #conn.send(serverTimeNow.encode())
-                        #print("Sent %s to %s"%(serverTimeNow, addr))
-                        # Close the connection to the client
-                        #conn.close()
+                    conn, addr = sock.accept()
+                    thread = threading.Thread(target=self._handle_thread, args=(conn,addr))
+                    thread.start()
         except OSError as e:
             respond_body = "OSError in _create_socket method!"
             self._error.print_error(e, respond_body)
@@ -53,6 +47,8 @@ class RPCServer:
             respond_body = "Error in _create_socket method!"
             self._error.print_error(e, respond_body)
     
+
+
     def _create_database(self):
         try:
             self._database = database.Database("database.db")
