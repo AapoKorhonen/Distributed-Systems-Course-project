@@ -19,12 +19,16 @@ class Database:
     def make_tables(self):
         try:
             cursor = self.conn.cursor()
-            cursor.execute("create table USERS (USER STRING PRIMARY KEY,PASSWORD STRING NOT NULL) " )
-            cursor.execute("create table GAMES (ID INT PRIMARY KEY, PLAYER1 STRING NOT NULL, PLAYER2 STRING NOT NULL, OUTCOME STRING) " )
+            komento1 = """create table USERS 
+                        (USERNAME STRING PRIMARY KEY,PASSWORD STRING NOT NULL) """
+            cursor.execute(komento1)
+            komento2 = """create table GAMES (ID INT PRIMARY KEY, 
+                        PLAYER1 STRING NOT NULL, PLAYER2 STRING NOT NULL, OUTCOME STRING) """
+            cursor.execute(komento2)
             self.conn.commit()
 
         except:
-            print("Taulukost jo olemassa")
+            print("Taulukot jo olemassa")
             self.id = self.init_id()
             
 
@@ -32,11 +36,14 @@ class Database:
         
         try:
             cursor = self.connect.cursor()
-            cursor.execute("SELECT ID FROM GAMES WHERE ID IS (SELECT MAX(ID) FROM GAMES)")
+            komento = """SELECT ID FROM GAMES 
+                        WHERE ID IS (SELECT MAX(ID) FROM GAMES)"""
+            cursor.execute(komento)
             ID = int(cursor.fetchall())
+            self.conn.commit()
             print("Onnistui")
         except:
-            print("ERRORi")
+            print("VIRHE init_id")
             ID = 0
         
         return ID
@@ -51,30 +58,104 @@ class Database:
 
      
     def insert_new_user(self, username, password):
-    
-        cursor = self.conn.cursor()
         
-    
+        try:
+            cursor = self.conn.cursor()
+            datat = (username, password)
+            
+            komento = """INSERT INTO USERS
+                              (username, password) 
+                              VALUES (?, ?);"""
+            cursor.execute(komento, datat)
+            self.conn.commit()
+        except:
+            print("VIRHE insert_new_user")
+            return 1
     
         return 0
         
     
     def insert_game_history(self, ID , p1, p2, outcome):
+        
+        try:
+            cursor = self.conn.cursor()
+            datat = (ID, p1, p2, outcome)
+            
+            komento = """INSERT INTO GAMES
+                              (ID, PLAYER1, PLAYER2, OUTCOME) 
+                              VALUES (?, ?, ?, ? );"""
+            cursor.execute(komento, datat)
+            self.conn.commit()
+        except:
+            print("VIRHE INSERT_GAME_HISTORY")
+            return 1
         return 0
         
     
-    def get_user_information():
-        return 0
+    def get_user_information(self):
         
-    
-    def get_game_information():
-        return 0
+        try:
+            cursor = self.conn.cursor()
+            komento = """SELECT * FROM USERS;"""
+            cursor.execute(komento)
+            ID = cursor.fetchall()
+            self.conn.commit()
+        except:
+            print("ERROR")
         
-    def get_game_info_user():
+        
+        return ID
+    
+    
+    def get_game_information(self):
+        
+        try:
+            cursor = self.conn.cursor()
+            komento = """SELECT * FROM GAMES;"""
+            cursor.execute(komento)
+            ID = cursor.fetchall()
+            self.conn.commit()
+        except:    
+            print("ERROR")
+            return 0
+        return ID
+        
+    def get_game_info_user(self):
         return 0
     
-    def get_game_info_wins_user():
-        return 0
+    def get_game_info_wins_user(self, username):
+    
+        try:
+            cursor = self.conn.cursor()
+            komento = """SELECT COUNT(OUTCOME) FROM GAMES WHERE OUTCOME = ?;"""
+            cursor.execute(komento, (username,))
+            ID = int(cursor.fetchall()[0][0])
+            self.conn.commit()
+        except:    
+            print("ERROR")
+            return 0
+        return ID
+        
+        
+    def check_credentials(self, username, password):
+    
+        arvo = False
+        try:
+            cursor = self.conn.cursor()
+            komento = """SELECT PASSWORD FROM USERS WHERE USERNAME = ?;"""
+            cursor.execute(komento, (username, ))
+            password_test = cursor.fetchall()
+            self.conn.commit()
+            print(password_test[0][0])
+            if password == password_test[0][0]:
+            
+                arvo = True
+            
+        except:   
+            print("ERROR check_credentials")
+            
+        
+        return arvo
         
         
         
