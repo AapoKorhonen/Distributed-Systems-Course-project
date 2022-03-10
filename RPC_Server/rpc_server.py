@@ -2,7 +2,6 @@
 This is Rock-Paper-Scissors server.
 
 https://docs.python.org/3/library/ssl.html#ssl.SSLContext.load_cert_chain
-https://www.freecodecamp.org/news/python-property-decorator/ # @property lesson
 """
 
 
@@ -10,46 +9,52 @@ import datetime
 import socket
 import ssl
 import error_handler
+
+import database
+import communication_handler
 import game_generator
+import threading
 
 class RPCServer:
-    def __init__(self, database, pem, key):
-        self._database = database
+    def __init__(self, pem, key):
+        self._database = None
         self._pem = pem
         self._key = key
+        self._error = error_handler.ErrorHandler()
+    
+    def _handle_thread(self, connection, address):
+        # give here communication handler to the client
+        communication_handler.CommunicationHandler(connection, address)
+        # this works!!!!!!!!!!!!!!!!!!!!!!!
 
     def _create_socket(self): # leading '_' in the method name distinguishes 
                                 # private and public methods
         try:
             hostname = '127.0.0.1' # loopback address
-            context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-            context.load_cert_chain(server._pem, server._key) # give certificate and private key
 
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
                 sock.bind((hostname, 8001))
                 sock.listen(5)
                 while True:
                     # Keep accepting connections from clients
-                    with context.wrap_socket(sock, server_side=True) as ssock:
-                        # (clientConnection, clientAddress) = serverSocket.accept()
-                        print("kakkapaa")
-                        conn, addr = ssock.accept() #Tässä on homma
-                        print("pylly")
-                        print(conn.getpeercert)
-                        # Send current server time to the client
-                        serverTimeNow = "%s"%datetime.datetime.now()
-                        conn.send(serverTimeNow.encode())
-                        print("Sent %s to %s"%(serverTimeNow, addr))
-                        # Close the connection to the client
-                        conn.close()
+                    conn, addr = sock.accept()
+                    thread = threading.Thread(target=self._handle_thread, args=(conn,addr))
+                    thread.start()
         except OSError as e:
             respond_body = "OSError in _create_socket method!"
-            handler = error_handler.ErrorHandler() # make an instance of the class ErrorHandler
-            handler.print_error(e, respond_body)
+            self._error.print_error(e, respond_body)
         except Exception as e:
             respond_body = "Error in _create_socket method!"
-            handler = error_handler.ErrorHandler() # make an instance of the class ErrorHandler
-            handler.print_error(e, respond_body)
+            self._error.print_error(e, respond_body)
+    
+
+
+    def _create_database(self):
+        try:
+            self._database = database.Database("database.db")
+        except Exception as e:
+            respond_body = "Error in _create_database method!"
+            self._error.print_error(e, respond_body)
 
     def log(self, message, error=False):
             """ ANSI color codes """
@@ -86,10 +91,14 @@ class RPCServer:
     def _main(self): 
         """This method calls all the necessary classes to 
         run the server."""
-        server = RPCServer(self._database, self._pem, self._key)
+        server = RPCServer(self._pem, self._key)
+        server.log("Initializing database...")
+        server._create_database()
+        # you need to initialize other handlers before opening the socket connection
+        server.log("Creating game generator...")
+
         server.log("Creating socket connection...")
         server._create_socket()
-        server.log("Creating game handler...")
        
         
 
@@ -97,8 +106,23 @@ class RPCServer:
 if __name__ == '__main__':
     """Server can be run only directly calling the 
     RPC_Server class."""
+
+    # get certification file and private key
     pem = 'Certificates/server.pem'
     key = 'Certificates/server.key'
 
-    server = RPCServer("database.db", pem, key)
+    # create server instance
+    server = RPCServer(pem, key)
+
+    # start server
     server._main()
+
+
+
+
+
+
+
+
+
+

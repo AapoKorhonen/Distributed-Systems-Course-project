@@ -1,4 +1,4 @@
-
+# Note! There is not anything else but print errors functionality. Should there be other functionality?
 
 class ErrorHandler:
     error_message = ""
