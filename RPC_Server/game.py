@@ -48,46 +48,4 @@ class Game:
         
         return self.outcome
         
-    
-    pass
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
- #       match self.p1move:
- #           case "R":
- #           
- #               match self.p2move:
- #                   case "R":
- #                       self.outcome = "Tie"
- #                   case "P":
- #                      self.outcome = self.p2
- #                  case "S":
-  #                      self.outcome = self.p1
-
- #           case "P":
- #               match self.p2move:
- #                   case "R":
- #                       self.outcome = self.p1
- #                   case "P":
- #                       self.outcome = "Tie"
- #                   case "S":
- #                       self.outcome = self.p2
-
- #           case "S":
- #               match self.p2move
- #                   case "R":
- #                       self.outcome = self.p2
- #                   case "P":
- #                       self.outcome = self.p1
- #               
- #                   case "S":
- #                       self.outcome = "Tie"
-#
+  
