@@ -10,6 +10,7 @@ import socket
 import ssl
 import error_handler
 import database
+import communication_handler
 
 class RPCServer:
     def __init__(self, pem, key):
@@ -33,13 +34,16 @@ class RPCServer:
                     with context.wrap_socket(sock, server_side=True) as ssock:
                         # (clientConnection, clientAddress) = serverSocket.accept()
                         conn, addr = ssock.accept()
-                        print(conn.getpeercert)
+                        # give here communication handler to the client
+                        communication_handler.CommunicationHandler(conn, addr)
+
+                        #print(conn.getpeercert)
                         # Send current server time to the client
-                        serverTimeNow = "%s"%datetime.datetime.now()
-                        conn.send(serverTimeNow.encode())
-                        print("Sent %s to %s"%(serverTimeNow, addr))
+                        #serverTimeNow = "%s"%datetime.datetime.now()
+                        #conn.send(serverTimeNow.encode())
+                        #print("Sent %s to %s"%(serverTimeNow, addr))
                         # Close the connection to the client
-                        conn.close()
+                        #conn.close()
         except OSError as e:
             respond_body = "OSError in _create_socket method!"
             self._error.print_error(e, respond_body)
@@ -93,9 +97,10 @@ class RPCServer:
         server.log("Initializing database...")
         server._create_database()
         # you need to initialize other handlers before opening the socket connection
+        server.log("Creating game generator...")
+
         server.log("Creating socket connection...")
         server._create_socket()
-        server.log("Creating game handler...")
 
         
 
@@ -113,3 +118,13 @@ if __name__ == '__main__':
 
     # start server
     server._main()
+
+
+
+
+
+
+
+
+
+
