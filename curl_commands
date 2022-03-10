@@ -19,3 +19,6 @@ curl -u Reijo:salasana -k -d "testmessage.json" https://localhost:8001/chat -H "
 
 # GET - serve_test.py
 curl -k http://localhost:8080 -H "Content-Type: text/html"
+
+# GET - rpc_server.py
+curl -k https://localhost:8001 -H "Content-Type: text/html"
