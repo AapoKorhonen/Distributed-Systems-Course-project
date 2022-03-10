@@ -2,7 +2,6 @@
 This is Rock-Paper-Scissors server.
 
 https://docs.python.org/3/library/ssl.html#ssl.SSLContext.load_cert_chain
-https://www.freecodecamp.org/news/python-property-decorator/ # @property lesson
 """
 
 
@@ -10,13 +9,14 @@ import datetime
 import socket
 import ssl
 import error_handler
-
+import database
 
 class RPCServer:
-    def __init__(self, database, pem, key):
-        self._database = database
+    def __init__(self, pem, key):
+        self._database = None
         self._pem = pem
         self._key = key
+        self._error = error_handler.ErrorHandler()
 
     def _create_socket(self): # leading '_' in the method name distinguishes 
                                 # private and public methods
@@ -42,12 +42,17 @@ class RPCServer:
                         conn.close()
         except OSError as e:
             respond_body = "OSError in _create_socket method!"
-            handler = error_handler.ErrorHandler() # make an instance of the class ErrorHandler
-            handler.print_error(e, respond_body)
+            self._error.print_error(e, respond_body)
         except Exception as e:
             respond_body = "Error in _create_socket method!"
-            handler = error_handler.ErrorHandler() # make an instance of the class ErrorHandler
-            handler.print_error(e, respond_body)
+            self._error.print_error(e, respond_body)
+    
+    def _create_database(self):
+        try:
+            self._database = database.Database("database.db")
+        except Exception as e:
+            respond_body = "Error in _create_database method!"
+            self._error.print_error(e, respond_body)
 
     def log(self, message, error=False):
             """ ANSI color codes """
@@ -84,7 +89,10 @@ class RPCServer:
     def _main(self): 
         """This method calls all the necessary classes to 
         run the server."""
-        server = RPCServer(self._database, self._pem, self._key)
+        server = RPCServer(self._pem, self._key)
+        server.log("Initializing database...")
+        server._create_database()
+        # you need to initialize other handlers before opening the socket connection
         server.log("Creating socket connection...")
         server._create_socket()
         server.log("Creating game handler...")
@@ -95,8 +103,13 @@ class RPCServer:
 if __name__ == '__main__':
     """Server can be run only directly calling the 
     RPC_Server class."""
+
+    # get certification file and private key
     pem = 'Certificates/server.pem'
     key = 'Certificates/server.key'
 
-    server = RPCServer("database.db", pem, key)
+    # create server instance
+    server = RPCServer(pem, key)
+
+    # start server
     server._main()
