@@ -9,11 +9,13 @@ import datetime
 import socket
 import ssl
 import error_handler
-
+import user
 import database
 import communication_handler
 import game_generator
 import threading
+import log
+
 
 class RPCServer:
     def __init__(self, pem, key):
@@ -21,11 +23,100 @@ class RPCServer:
         self._pem = pem
         self._key = key
         self._error = error_handler.ErrorHandler()
-    
+        self.log_system = log.Log()
+
+
+
+    def _handle_game(self, connection, address):
+        ##########################
+        # Käsittelee game pyynnöt
+        #  (Voi ajatella /game )
+        # Nyt vain tulostaa "_handle_game"
+        #
+        # Jatkossa tässä siirretään käyttäjä
+        # game_generaattoriin ja siitä eteenpäin
+        ##########################
+        print("_handle_game")
+        return 0
+
+    def _handle_register(self, connection, address):
+        ##########################
+        # Käsittelee register pyynnöt
+        #  (Voi ajatella /register )
+        # Nyt vain tulostaa "_handle_register"
+        #
+        # Jatkossa tässä registöröidään käyttäjä (mahdollisesti omassa oliossa ?)
+        ##########################
+        print("_handle_register")
+        return 0
+
+    def _handle_login(self,connection, address):
+        ##########################
+        # Käsittelee login pyynnöt
+        #  (Voi ajatella /login )
+        # Testi mielessä olen tähän tehnyt eniten ominaisuuksia
+        # Nyt jää aluksi kuuntelemaan clientin seuraavaa viestiä, eli käyttäjänimeä (while not true name)
+        # Sitten luo uuden User- olion
+        # Lopuksi User olion send_message metodilla lähettää viestin clientille, että "käyttäjä luotu" TESTATKAA ETTÄ TOIMII
+        # Jatkossa tässä siirretään käyttäjä
+        # game_generaattoriin ja siitä eteenpäin
+        ##########################
+        HEADER = 64
+        FORMAT = 'utf-8'
+        print("_handle_login")
+        name = connection.recv(HEADER).decode(FORMAT)
+        while not name:
+            name = connection.recv(HEADER).decode(FORMAT)
+        print(name)
+
+        user1 = user.User(name, connection, address)
+        user1.send_message("käyttäjä luotu")
+        print("kaka")
+
+
+        return 0
+
+    def _handle_stats(self, connection, address):
+        ##########################
+        # Käsittelee stats pyynnöt
+        #  (Voi ajatella /stats )
+        # Nyt vain tulostaa "_handle_stats"
+        #
+        # Lopullisessa versiossa tässä mahdollisesti vaan etitään databasesta käyttäjän pelit ja lähetetään ne clientille
+        ##########################
+        print("_handle_stats")
+        return 0
+
     def _handle_thread(self, connection, address):
-        # give here communication handler to the client
-        communication_handler.CommunicationHandler(connection, address)
-        # this works!!!!!!!!!!!!!!!!!!!!!!!
+
+        ##########################
+        # Käsittelee ensimmäisenä yhteyden
+        # Tarkistaa mikä on ensimmäinen clientin lähettämä
+        # viesti.
+        #
+        # Mahdolliset clientin lähettämä viesti ovat:
+        #   register
+        #   login
+        #   game
+        #   stats
+        ##########################
+
+        HEADER = 64
+        FORMAT = 'utf-8'
+        message = connection.recv(HEADER).decode(FORMAT)
+        print(message)
+        if message == "register":
+            self._handle_register(connection, address)
+        elif message == "login":
+            self._handle_login(connection, address)
+        elif message == "game":
+            self._handle_game(connection, address)
+        elif message == "stats":
+            self._handle_stats(connection, address)
+        else:
+            print("ONGELMA")
+
+        connection.close()
 
     def _create_socket(self): # leading '_' in the method name distinguishes 
                                 # private and public methods
@@ -56,48 +147,18 @@ class RPCServer:
             respond_body = "Error in _create_database method!"
             self._error.print_error(e, respond_body)
 
-    def log(self, message, error=False):
-            """ ANSI color codes """
-            BLACK = "\033[0;30m"
-            RED = "\033[0;31m"
-            GREEN = "\033[0;32m"
-            BROWN = "\033[0;33m"
-            BLUE = "\033[0;34m"
-            PURPLE = "\033[0;35m"
-            CYAN = "\033[0;36m"
-            LIGHT_GRAY = "\033[0;37m"
-            DARK_GRAY = "\033[1;30m"
-            LIGHT_RED = "\033[1;31m"
-            LIGHT_GREEN = "\033[1;32m"
-            YELLOW = "\033[1;33m"
-            LIGHT_BLUE = "\033[1;34m"
-            LIGHT_PURPLE = "\033[1;35m"
-            LIGHT_CYAN = "\033[1;36m"
-            LIGHT_WHITE = "\033[1;37m"
-            BOLD = "\033[1m"
-            FAINT = "\033[2m"
-            ITALIC = "\033[3m"
-            UNDERLINE = "\033[4m"
-            BLINK = "\033[5m"
-            NEGATIVE = "\033[7m"
-            CROSSED = "\033[9m"
-            END = "\033[0m"
-            
-            if error:
-                print(RED + message)
-            else:
-                print(GREEN + message)
+
 
     def _main(self): 
         """This method calls all the necessary classes to 
         run the server."""
         server = RPCServer(self._pem, self._key)
-        server.log("Initializing database...")
+        self.log_system.log("Initializing database...")
         server._create_database()
         # you need to initialize other handlers before opening the socket connection
-        server.log("Creating game generator...")
+        self.log_system.log("Creating game generator...")
 
-        server.log("Creating socket connection...")
+        self.log_system.log("Creating socket connection...")
         server._create_socket()
        
         
