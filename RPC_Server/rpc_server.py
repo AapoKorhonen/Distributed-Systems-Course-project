@@ -53,6 +53,7 @@ class RPCServer:
         #
         # Jatkossa tässä registeröidään käyttäjä (mahdollisesti omassa oliossa ?)
         ##########################
+
         try:
             HEADER = 64
             FORMAT = 'utf-8'
@@ -71,6 +72,7 @@ class RPCServer:
         except Exception as e:
             respond_body = "Error in _handle_register method!"
             self._error.print_error(e, respond_body)
+
         return 0
 
     def _handle_login(self,connection, address):
@@ -108,6 +110,7 @@ class RPCServer:
         except Exception as e:
             respond_body = "Error in _handle_login method!"
             self._error.print_error(e, respond_body)
+
 
         return 0
 
