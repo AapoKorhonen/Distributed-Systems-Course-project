@@ -98,12 +98,12 @@ class RPCServer:
             salasana = connection.recv(HEADER).decode(FORMAT)
             while not salasana:
                 salasana = connection.recv(HEADER).decode(FORMAT)
-            if self._database.check_credentials(name, salasana):
+            if self._database._check_credentials(name, salasana):
                 user1 = user.User(name, connection, address)
-                user1.send_message("KIRJAUTUMINEN ONNISTUI")
+                user1._send_message("KIRJAUTUMINEN ONNISTUI")
             else:
                 user1 = user.User(name, connection, address)
-                user1.send_message("VIRHE KIRJAUTUMISESSA")
+                user1._send_message("VIRHE KIRJAUTUMISESSA")
                 print("kaka")
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
@@ -152,6 +152,8 @@ class RPCServer:
             connected = True
             while connected:
                 message = connection.recv(HEADER).decode(FORMAT)
+                while not message:
+                    message = connection.recv(HEADER).decode(FORMAT)
                 print(message)
                 if message == "register":
                     self._handle_register(connection, address)
@@ -201,7 +203,6 @@ class RPCServer:
     def _create_database(self):
         try:
             self._database = database.Database("database.db")
-
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
             respond_body = "Error in _create_database method!"

@@ -11,10 +11,9 @@ class Database:
         #self.conn = sqlite3.connect(filename)
         self.filename = filename
         self.id = 0
-        self.make_tables()
         self._lock = threading.Lock()
         self._error = error_handler.ErrorHandler()
-        
+        self._make_tables()
         
         
     
@@ -36,7 +35,7 @@ class Database:
             respond_body = "Error in Database._make_tables method!"
             self._error.print_error(e, respond_body)
             print("Taulukot jo olemassa")
-            self.id = self.init_id()
+            self.id = self._init_id()
             
 
     def _init_id(self):
@@ -55,7 +54,6 @@ class Database:
         except Exception as e:
             respond_body = "Error in Database._init_id method!"
             self._error.print_error(e, respond_body)
-            print("VIRHE init_id")
             ID = 0
         
         return ID

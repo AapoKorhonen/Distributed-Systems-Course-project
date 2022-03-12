@@ -41,7 +41,8 @@ class Client:
                 "login\n"
                 "register\n"
                 "stats\n"
-                "play\n")
+                "play\n"
+                "exit\n")
             while connected:
                 valinta = input()
                 if valinta == "login":
