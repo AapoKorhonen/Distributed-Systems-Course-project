@@ -4,7 +4,7 @@ import game_handler
 
 class GameGenerator:
 
-   def create_gameHandler():
+    def create_gameHandler():
        #creates the game_handler by using the class
        pass
 

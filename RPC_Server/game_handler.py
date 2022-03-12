@@ -19,9 +19,9 @@ class GameHandler:
 
     def create_db_object(self, p1, p2, outcome):
         #kutsuu databasea ja luo sinne uuden objektin
-       # __gameID = self.db.----#1.luo database funktiolla uuden ID
-       # self.db.-----(gameID, p1, p2, outcome) #luo uuden objektin
-       pass
+        #__gameID = self.db.----#1.luo database funktiolla uuden ID
+        #self.db.-----(gameID, p1, p2, outcome) #luo uuden objektin
+        pass
 
 
     
