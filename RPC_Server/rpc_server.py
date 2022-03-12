@@ -36,7 +36,13 @@ class RPCServer:
         # Jatkossa tässä siirretään käyttäjä
         # game_generaattoriin ja siitä eteenpäin
         ##########################
-        print("_handle_game")
+        try:
+            print("_handle_game")
+
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in _handle_game method!"
+            self._error.print_error(e, respond_body)
         return 0
 
     def _handle_register(self, connection, address):
@@ -45,9 +51,26 @@ class RPCServer:
         #  (Voi ajatella /register )
         # Nyt vain tulostaa "_handle_register"
         #
-        # Jatkossa tässä registöröidään käyttäjä (mahdollisesti omassa oliossa ?)
+        # Jatkossa tässä registeröidään käyttäjä (mahdollisesti omassa oliossa ?)
         ##########################
-        print("_handle_register")
+        try:
+            HEADER = 64
+            FORMAT = 'utf-8'
+            print("_handle_register")
+            name = connection.recv(HEADER).decode(FORMAT)
+            while not name:
+                name = connection.recv(HEADER).decode(FORMAT)
+            salasana = connection.recv(HEADER).decode(FORMAT)
+            while not salasana:
+                salasana = connection.recv(HEADER).decode(FORMAT)
+            print(name)
+            print(salasana)
+            self._database.insert_new_user(name, salasana)
+        
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in _handle_register method!"
+            self._error.print_error(e, respond_body)
         return 0
 
     def _handle_login(self,connection, address):
@@ -55,24 +78,36 @@ class RPCServer:
         # Käsittelee login pyynnöt
         #  (Voi ajatella /login )
         # Testi mielessä olen tähän tehnyt eniten ominaisuuksia
-        # Nyt jää aluksi kuuntelemaan clientin seuraavaa viestiä, eli käyttäjänimeä (while not true name)
+        # Nyt jää aluksi kuuntelemaan clientin seuraavaa viestiä, eli käyttäjänimeä 
+        # (while not true name)
         # Sitten luo uuden User- olion
-        # Lopuksi User olion send_message metodilla lähettää viestin clientille, että "käyttäjä luotu" TESTATKAA ETTÄ TOIMII
+        # Lopuksi User olion send_message metodilla lähettää viestin clientille, että 
+        # "käyttäjä luotu" TESTATKAA ETTÄ TOIMII
         # Jatkossa tässä siirretään käyttäjä
         # game_generaattoriin ja siitä eteenpäin
         ##########################
-        HEADER = 64
-        FORMAT = 'utf-8'
-        print("_handle_login")
-        name = connection.recv(HEADER).decode(FORMAT)
-        while not name:
+        try:
+            HEADER = 64
+            FORMAT = 'utf-8'
+            print("_handle_login")
             name = connection.recv(HEADER).decode(FORMAT)
-        print(name)
+            while not name:
+                name = connection.recv(HEADER).decode(FORMAT)
+            salasana = connection.recv(HEADER).decode(FORMAT)
+            while not salasana:
+                salasana = connection.recv(HEADER).decode(FORMAT)
+            if self._database.check_credentials(name, salasana):
+                user1 = user.User(name, connection, address)
+                user1.send_message("KIRJAUTUMINEN ONNISTUI")
+            else:
+                user1 = user.User(name, connection, address)
+                user1.send_message("VIRHE KIRJAUTUMISESSA")
+                print("kaka")
 
-        user1 = user.User(name, connection, address)
-        user1.send_message("käyttäjä luotu")
-        print("kaka")
-
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in _handle_login method!"
+            self._error.print_error(e, respond_body)
 
         return 0
 
@@ -82,9 +117,17 @@ class RPCServer:
         #  (Voi ajatella /stats )
         # Nyt vain tulostaa "_handle_stats"
         #
-        # Lopullisessa versiossa tässä mahdollisesti vaan etitään databasesta käyttäjän pelit ja lähetetään ne clientille
+        # Lopullisessa versiossa tässä mahdollisesti vaan etitään databasesta käyttäjän pelit ja 
+        # lähetetään ne clientille
         ##########################
-        print("_handle_stats")
+        try:
+            print("_handle_stats")
+
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in _handle_stats method!"
+            self._error.print_error(e, respond_body)
+
         return 0
 
     def _handle_thread(self, connection, address):
@@ -100,23 +143,35 @@ class RPCServer:
         #   game
         #   stats
         ##########################
+        try:
+            HEADER = 64
+            FORMAT = 'utf-8'
+            connected = True
+            while connected:
+                message = connection.recv(HEADER).decode(FORMAT)
+                print(message)
+                if message == "register":
+                    self._handle_register(connection, address)
+                elif message == "login":
+                    self._handle_login(connection, address)
+                elif message == "game":
+                    self._handle_game(connection, address)
+                elif message == "stats":
+                    self._handle_stats(connection, address)
+                elif message == "exit":
+                    connected = False
+                    print("operated exit")
+                else:
+                    print("ONGELMA")
 
-        HEADER = 64
-        FORMAT = 'utf-8'
-        message = connection.recv(HEADER).decode(FORMAT)
-        print(message)
-        if message == "register":
-            self._handle_register(connection, address)
-        elif message == "login":
-            self._handle_login(connection, address)
-        elif message == "game":
-            self._handle_game(connection, address)
-        elif message == "stats":
-            self._handle_stats(connection, address)
-        else:
-            print("ONGELMA")
+            connection.close()
+            print("connection closed")
 
-        connection.close()
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in _handle_thread method!"
+            self._error.print_error(e, respond_body)
+
 
     def _create_socket(self): # leading '_' in the method name distinguishes 
                                 # private and public methods
@@ -143,6 +198,8 @@ class RPCServer:
     def _create_database(self):
         try:
             self._database = database.Database("database.db")
+
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
             respond_body = "Error in _create_database method!"
             self._error.print_error(e, respond_body)
@@ -152,15 +209,20 @@ class RPCServer:
     def _main(self): 
         """This method calls all the necessary classes to 
         run the server."""
-        server = RPCServer(self._pem, self._key)
-        self.log_system.log("Initializing database...")
-        server._create_database()
-        # you need to initialize other handlers before opening the socket connection
-        self.log_system.log("Creating game generator...")
+        try:
+            server = RPCServer(self._pem, self._key)
+            self.log_system.log("Initializing database...")
+            server._create_database()
+            # you need to initialize other handlers before opening the socket connection
+            self.log_system.log("Creating game generator...")
 
-        self.log_system.log("Creating socket connection...")
-        server._create_socket()
-       
+            self.log_system.log("Creating socket connection...")
+            server._create_socket()
+
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in _main method!"
+            self._error.print_error(e, respond_body)
         
 
 

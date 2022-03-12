@@ -2,12 +2,15 @@
 This creates connection for the client.
 """
 
+import imp
 import socket
 import login
 import stats
 import register
 import play
 import ssl
+import exit_client
+import error_handler
 
 class Client:
     def __init__(self, client_pem, hostname, port):
@@ -22,6 +25,8 @@ class Client:
         self.stats = stats.Stats(hostname, port)
         self.register = register.Register(hostname, port)
         self.play = play.Play(hostname, port)
+        self.exit = exit_client.ExitClient(hostname, port)
+        self._error = error_handler.ErrorHandler()
     
 
     def _main(self):
@@ -30,12 +35,13 @@ class Client:
         # Luetaan käyttäjän syöte ja "käynnistetään"
         # sitä toimintoa vastaava olio.
         ###########################################
+        connected = True
         print("Valitse:\n"
               "login\n"
               "register\n"
               "stats\n"
               "play\n")
-        while True:
+        while connected:
             valinta = input()
             if valinta == "login":
                 self.login.main()
@@ -45,6 +51,9 @@ class Client:
                 self.stats.main()
             elif valinta == "play":
                 self.play.main()
+            elif valinta == "exit":
+                self.exit.main()
+                connected =False
             
 
 if __name__ == '__main__':
