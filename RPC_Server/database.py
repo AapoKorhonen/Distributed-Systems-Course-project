@@ -7,7 +7,8 @@ class Database:
     
     def __init__(self ,filename):
     
-        self.conn = sqlite3.connect(filename)
+        #self.conn = sqlite3.connect(filename)
+        self.filename = filename
         self.id = 0
         self.make_tables()
         self._lock = threading.Lock()
@@ -18,14 +19,15 @@ class Database:
     
     def make_tables(self):
         try:
-            cursor = self.conn.cursor()
+            conn = sqlite3.connect(self.filename)
+            cursor = conn.cursor()
             komento1 = """create table USERS 
                         (USERNAME STRING PRIMARY KEY,PASSWORD STRING NOT NULL) """
             cursor.execute(komento1)
             komento2 = """create table GAMES (ID INT PRIMARY KEY, 
                         PLAYER1 STRING NOT NULL, PLAYER2 STRING NOT NULL, OUTCOME STRING) """
             cursor.execute(komento2)
-            self.conn.commit()
+            conn.commit()
 
         except:
             print("Taulukot jo olemassa")
@@ -35,12 +37,13 @@ class Database:
     def init_id(self):
         
         try:
-            cursor = self.connect.cursor()
+            conn = sqlite3.connect(self.filename)
+            cursor = conn.cursor()
             komento = """SELECT ID FROM GAMES 
                         WHERE ID IS (SELECT MAX(ID) FROM GAMES)"""
             cursor.execute(komento)
             ID = int(cursor.fetchall())
-            self.conn.commit()
+            conn.commit()
             print("Onnistui")
         except:
             print("VIRHE init_id")
@@ -58,16 +61,17 @@ class Database:
 
      
     def insert_new_user(self, username, password):
-        
+
         try:
-            cursor = self.conn.cursor()
+            conn = sqlite3.connect(self.filename)
+            cursor = conn.cursor()
             datat = (username, password)
             
             komento = """INSERT INTO USERS
                               (username, password) 
                               VALUES (?, ?);"""
             cursor.execute(komento, datat)
-            self.conn.commit()
+            conn.commit()
         except:
             print("VIRHE insert_new_user")
             return 1
@@ -78,14 +82,15 @@ class Database:
     def insert_game_history(self, ID , p1, p2, outcome):
         
         try:
-            cursor = self.conn.cursor()
+            conn = sqlite3.connect(self.filename)
+            cursor = conn.cursor()
             datat = (ID, p1, p2, outcome)
             
             komento = """INSERT INTO GAMES
                               (ID, PLAYER1, PLAYER2, OUTCOME) 
                               VALUES (?, ?, ?, ? );"""
             cursor.execute(komento, datat)
-            self.conn.commit()
+            conn.commit()
         except:
             print("VIRHE INSERT_GAME_HISTORY")
             return 1
@@ -95,11 +100,12 @@ class Database:
     def get_user_information(self):
         
         try:
-            cursor = self.conn.cursor()
+            conn = sqlite3.connect(self.filename)
+            cursor = conn.cursor()
             komento = """SELECT * FROM USERS;"""
             cursor.execute(komento)
             ID = cursor.fetchall()
-            self.conn.commit()
+            conn.commit()
         except:
             print("ERROR")
         
@@ -110,11 +116,12 @@ class Database:
     def get_game_information(self):
         
         try:
-            cursor = self.conn.cursor()
+            conn = sqlite3.connect(self.filename)
+            cursor = conn.cursor()
             komento = """SELECT * FROM GAMES;"""
             cursor.execute(komento)
             ID = cursor.fetchall()
-            self.conn.commit()
+            conn.commit()
         except:    
             print("ERROR")
             return 0
@@ -126,11 +133,12 @@ class Database:
     def get_game_info_wins_user(self, username):
     
         try:
-            cursor = self.conn.cursor()
+            conn = sqlite3.connect(self.filename)
+            cursor =conn.cursor()
             komento = """SELECT COUNT(OUTCOME) FROM GAMES WHERE OUTCOME = ?;"""
             cursor.execute(komento, (username,))
             ID = int(cursor.fetchall()[0][0])
-            self.conn.commit()
+            conn.commit()
         except:    
             print("ERROR")
             return 0
@@ -141,11 +149,12 @@ class Database:
     
         arvo = False
         try:
-            cursor = self.conn.cursor()
+            conn = sqlite3.connect(self.filename)
+            cursor = conn.cursor()
             komento = """SELECT PASSWORD FROM USERS WHERE USERNAME = ?;"""
             cursor.execute(komento, (username, ))
             password_test = cursor.fetchall()
-            self.conn.commit()
+            conn.commit()
             print(password_test[0][0])
             if password == password_test[0][0]:
             
