@@ -47,7 +47,19 @@ class RPCServer:
         #
         # Jatkossa tässä registöröidään käyttäjä (mahdollisesti omassa oliossa ?)
         ##########################
+        HEADER = 64
+        FORMAT = 'utf-8'
         print("_handle_register")
+        name = connection.recv(HEADER).decode(FORMAT)
+        while not name:
+            name = connection.recv(HEADER).decode(FORMAT)
+        salasana = connection.recv(HEADER).decode(FORMAT)
+        while not salasana:
+            salasana = connection.recv(HEADER).decode(FORMAT)
+        print(name)
+        print(salasana)
+        self._database.insert_new_user(name, salasana)
+
         return 0
 
     def _handle_login(self,connection, address):
@@ -67,11 +79,16 @@ class RPCServer:
         name = connection.recv(HEADER).decode(FORMAT)
         while not name:
             name = connection.recv(HEADER).decode(FORMAT)
-        print(name)
-
-        user1 = user.User(name, connection, address)
-        user1.send_message("käyttäjä luotu")
-        print("kaka")
+        salasana = connection.recv(HEADER).decode(FORMAT)
+        while not salasana:
+            salasana = connection.recv(HEADER).decode(FORMAT)
+        if self._database.check_credentials(name, salasana):
+            user1 = user.User(name, connection, address)
+            user1.send_message("KIRJAUTUMINEN ONNISTUI")
+        else:
+            user1 = user.User(name, connection, address)
+            user1.send_message("VIRHE KIRJAUTUMISESSA")
+            print("kaka")
 
 
         return 0

@@ -28,14 +28,18 @@ class Login:
             mes = "login"
             message = mes.encode(self.FORMAT)
             sock.send(message)
-            masneg = input("Anna käyttäjänimi")
-            messag = masneg.encode(self.FORMAT)
-            sock.send(messag)
+            print("Kirjaudutaan käyttäjä tilillesi:\n")
+
+            name = input("Anna käyttäjänimi")
+            password = input("Salasana")
+            message = name.encode(self.FORMAT)
+            sock.send(message)
+            message = password.encode(self.FORMAT)
+            sock.send(message)
             HEADER = 64
-            FORMAT = 'utf-8'
-            name = sock.recv(HEADER).decode(FORMAT)
+            name = sock.recv(HEADER).decode(self.FORMAT)
             while not name:
-                name = sock.recv(HEADER).decode(FORMAT)
+                name = sock.recv(HEADER).decode(self.FORMAT)
             # Receive data from server (i.e., current server time)
             print(name)
             print("JEE!")

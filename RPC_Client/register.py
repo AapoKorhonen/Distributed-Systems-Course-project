@@ -24,4 +24,11 @@ class Register:
             sock.send(message)
             # Receive data from server (i.e., current server time)
             print("JEE!")
+
+            name = input("Käyttäjänimi")
+            password = input("Salasana")
+            message = name.encode(self.FORMAT)
+            sock.send(message)
+            message = password.encode(self.FORMAT)
+            sock.send(message)
         return 0
