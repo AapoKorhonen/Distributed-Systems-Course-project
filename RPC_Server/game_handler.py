@@ -37,4 +37,5 @@ class GameHandler:
             respond_body = "Error in GameHandler._create_db_object method!"
             self._error.print_error(e, respond_body)
 
+
     

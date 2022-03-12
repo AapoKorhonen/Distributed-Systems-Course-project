@@ -1,6 +1,7 @@
 import socket
 import error_handler
 
+
 ###########################################
 # Exit CLASS
 # Sends a exit request to the server and
@@ -16,6 +17,7 @@ class ExitClient:
         self.FORMAT = 'utf-8'
         self._error = error_handler.ErrorHandler()
 
+
     def main(self):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
@@ -30,4 +32,5 @@ class ExitClient:
         except Exception as e:
             respond_body = "Error in ExitClient._main method!"
             self._error.print_error(e, respond_body)
+            
         return 0

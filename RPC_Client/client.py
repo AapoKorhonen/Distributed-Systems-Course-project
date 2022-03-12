@@ -11,7 +11,6 @@ import play
 import ssl
 import exit_client
 import error_handler
-
 class Client:
     def __init__(self, client_pem, hostname, port):
 
@@ -35,6 +34,7 @@ class Client:
         # Luetaan käyttäjän syöte ja "käynnistetään"
         # sitä toimintoa vastaava olio.
         ###########################################
+
         try:
             connected = True
             print("Valitse:\n"
