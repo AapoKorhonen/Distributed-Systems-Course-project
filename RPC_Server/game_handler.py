@@ -12,15 +12,16 @@ class GameHandler:
         if not self.player1:
             self.player1 = p1
 
-        else if not self.player2:
+        elif not self.player2:
             self.player2 = p2
 
         
 
     def create_db_object(self, p1, p2, outcome):
         #kutsuu databasea ja luo sinne uuden objektin
-        __gameID = self.db.----#1.luo database funktiolla uuden ID
-        self.db.-----(gameID, p1, p2, outcome) #luo uuden objektin
+       # __gameID = self.db.----#1.luo database funktiolla uuden ID
+       # self.db.-----(gameID, p1, p2, outcome) #luo uuden objektin
+       pass
 
 
     
