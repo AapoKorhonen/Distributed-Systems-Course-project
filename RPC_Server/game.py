@@ -1,3 +1,4 @@
+import error_handler
 
 class Game:
 
@@ -8,6 +9,7 @@ class Game:
         self.p1move = None
         self.p2move = None
         self.outcome = None
+        self._error = error_handler.ErrorHandler()
         
     
     def p1_move(self, move):
@@ -17,7 +19,8 @@ class Game:
         self.p2move = move
 
     def solve_game(self, ):
-        
+        # tarviiko try-except virheenkäsittelyä? voiko mennä mikään pieleen?
+        # jos ei, niin voi poistaa import ja self._error lauseen __init__ metodista
         if self.p1move == "R":
             if self.p2move == "R":
                 self.outcome = "Tie"

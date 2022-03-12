@@ -1,5 +1,6 @@
 import sqlite3
 import threading
+import error_handler
 
 
 class Database:
@@ -12,12 +13,13 @@ class Database:
         self.id = 0
         self.make_tables()
         self._lock = threading.Lock()
+        self._error = error_handler.ErrorHandler()
         
         
         
     
     
-    def make_tables(self):
+    def _make_tables(self):
         try:
             conn = sqlite3.connect(self.filename)
             cursor = conn.cursor()
@@ -29,12 +31,15 @@ class Database:
             cursor.execute(komento2)
             conn.commit()
 
-        except:
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._make_tables method!"
+            self._error.print_error(e, respond_body)
             print("Taulukot jo olemassa")
             self.id = self.init_id()
             
 
-    def init_id(self):
+    def _init_id(self):
         
         try:
             conn = sqlite3.connect(self.filename)
@@ -45,21 +50,34 @@ class Database:
             ID = int(cursor.fetchall())
             conn.commit()
             print("Onnistui")
-        except:
+
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._init_id method!"
+            self._error.print_error(e, respond_body)
             print("VIRHE init_id")
             ID = 0
         
         return ID
      
-    def get_ID(self):
-    
-        with self._lock:
-            ID = self.id
-            self.id = self.id + 1
+    def _get_ID(self):
+        
+        try:
+            with self._lock:
+                ID = self.id
+                self.id = self.id + 1
+        
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._get_ID method!"
+            self._error.print_error(e, respond_body)
+            print("VIRHE init_id")
+            ID = 0
             
         return ID
 
      
+
     def insert_new_user(self, username, password):
 
         try:
@@ -72,14 +90,16 @@ class Database:
                               VALUES (?, ?);"""
             cursor.execute(komento, datat)
             conn.commit()
-        except:
-            print("VIRHE insert_new_user")
-            return 1
-    
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._insert_new_user method!"
+            self._error.print_error(e, respond_body)
+            conn.commit()
+            return 1    
         return 0
         
     
-    def insert_game_history(self, ID , p1, p2, outcome):
+    def _insert_game_history(self, ID , p1, p2, outcome):
         
         try:
             conn = sqlite3.connect(self.filename)
@@ -90,14 +110,19 @@ class Database:
                               (ID, PLAYER1, PLAYER2, OUTCOME) 
                               VALUES (?, ?, ?, ? );"""
             cursor.execute(komento, datat)
+
             conn.commit()
-        except:
-            print("VIRHE INSERT_GAME_HISTORY")
+        
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._insert_game_history method!"
+            self._error.print_error(e, respond_body)
+            conn.commit()
             return 1
         return 0
         
     
-    def get_user_information(self):
+    def _get_user_information(self):
         
         try:
             conn = sqlite3.connect(self.filename)
@@ -105,15 +130,20 @@ class Database:
             komento = """SELECT * FROM USERS;"""
             cursor.execute(komento)
             ID = cursor.fetchall()
+
             conn.commit()
-        except:
-            print("ERROR")
         
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._get_user_information method!"
+            self._error.print_error(e, respond_body)
+            conn.commit()
+            return 0
         
         return ID
     
     
-    def get_game_information(self):
+    def _get_game_information(self):
         
         try:
             conn = sqlite3.connect(self.filename)
@@ -121,16 +151,30 @@ class Database:
             komento = """SELECT * FROM GAMES;"""
             cursor.execute(komento)
             ID = cursor.fetchall()
+
             conn.commit()
-        except:    
-            print("ERROR")
+        
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._get_game_information method!"
+            self._error.print_error(e, respond_body)
+            conn.commit()
             return 0
+
+        
         return ID
         
-    def get_game_info_user(self):
-        return 0
+    def _get_game_info_user(self):
+        try:
+            return 0
+
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._get_game_info_user method!"
+            self._error.print_error(e, respond_body)
+        
     
-    def get_game_info_wins_user(self, username):
+    def _get_game_info_wins_user(self, username):
     
         try:
             conn = sqlite3.connect(self.filename)
@@ -138,14 +182,19 @@ class Database:
             komento = """SELECT COUNT(OUTCOME) FROM GAMES WHERE OUTCOME = ?;"""
             cursor.execute(komento, (username,))
             ID = int(cursor.fetchall()[0][0])
+
             conn.commit()
-        except:    
-            print("ERROR")
+        
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._get_game_info_wins_user method!"
+            self._error.print_error(e, respond_body)
             return 0
+
         return ID
         
         
-    def check_credentials(self, username, password):
+    def _check_credentials(self, username, password):
     
         arvo = False
         try:
@@ -160,8 +209,11 @@ class Database:
             
                 arvo = True
             
-        except:   
-            print("ERROR check_credentials")
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Database._check_credentials method! \
+                            \nERROR: check_credentials!"
+            self._error.print_error(e, respond_body)   
             
         
         return arvo
