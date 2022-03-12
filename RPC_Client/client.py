@@ -35,25 +35,31 @@ class Client:
         # Luetaan käyttäjän syöte ja "käynnistetään"
         # sitä toimintoa vastaava olio.
         ###########################################
-        connected = True
-        print("Valitse:\n"
-              "login\n"
-              "register\n"
-              "stats\n"
-              "play\n")
-        while connected:
-            valinta = input()
-            if valinta == "login":
-                self.login.main()
-            elif valinta == "register":
-                self.register.main()
-            elif valinta == "stats":
-                self.stats.main()
-            elif valinta == "play":
-                self.play.main()
-            elif valinta == "exit":
-                self.exit.main()
-                connected =False
+        try:
+            connected = True
+            print("Valitse:\n"
+                "login\n"
+                "register\n"
+                "stats\n"
+                "play\n")
+            while connected:
+                valinta = input()
+                if valinta == "login":
+                    self.login.main()
+                elif valinta == "register":
+                    self.register.main()
+                elif valinta == "stats":
+                    self.stats.main()
+                elif valinta == "play":
+                    self.play.main()
+                elif valinta == "exit":
+                    self.exit.main()
+                    connected =False
+        
+        # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
+        except Exception as e:
+            respond_body = "Error in Client._main method!"
+            self._error.print_error(e, respond_body)
             
 
 if __name__ == '__main__':
