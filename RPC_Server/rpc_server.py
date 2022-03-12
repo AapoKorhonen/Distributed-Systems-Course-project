@@ -120,8 +120,8 @@ class RPCServer:
 
         HEADER = 64
         FORMAT = 'utf-8'
-        connected = True
-        while connected:
+        #connected = True
+        while True:
             message = connection.recv(HEADER).decode(FORMAT)
             print(message)
             if message == "register":
@@ -133,14 +133,14 @@ class RPCServer:
             elif message == "stats":
                 self._handle_stats(connection, address)
             elif message == "exit":
-                connected = False
+                #connected = False
                 print("operated exit")
             else:
                 print("ONGELMA")
 
         connection.close()
         print("connection closed")
-        
+
     def _create_socket(self): # leading '_' in the method name distinguishes 
                                 # private and public methods
         try:
