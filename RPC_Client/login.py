@@ -30,9 +30,9 @@ class Login:
             sock.send(message)
             print("Kirjaudutaan käyttäjä tilillesi:\n")
 
-            name = input("Anna käyttäjänimi")
-            password = input("Salasana")
-            message = name.encode(self.FORMAT)
+            username = input("Anna käyttäjänimi\n")
+            password = input("Salasana\n")
+            message = username.encode(self.FORMAT)
             sock.send(message)
             message = password.encode(self.FORMAT)
             sock.send(message)
@@ -42,5 +42,8 @@ class Login:
                 name = sock.recv(HEADER).decode(self.FORMAT)
             # Receive data from server (i.e., current server time)
             print(name)
+            if name == "KIRJAUTUMINEN ONNISTUI":
+                return username, password
+            return None, None
             print("JEE!")
         return 0

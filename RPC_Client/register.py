@@ -15,6 +15,7 @@ class Register:
         self.port = 8001
         self.address = (hostname, port)
         self.FORMAT = 'utf-8'
+        self.HEADER = 64
 
     def main(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
@@ -25,10 +26,15 @@ class Register:
             # Receive data from server (i.e., current server time)
             print("JEE!")
 
-            name = input("Käyttäjänimi")
-            password = input("Salasana")
+            name = input("Käyttäjänimi\n")
+            password = input("Salasana\n")
             message = name.encode(self.FORMAT)
             sock.send(message)
             message = password.encode(self.FORMAT)
             sock.send(message)
+
+            name = sock.recv(self.HEADER).decode(self.FORMAT)
+            while not name:
+                name = sock.recv(self.HEADER).decode(self.FORMAT)
+            print(name)
         return 0

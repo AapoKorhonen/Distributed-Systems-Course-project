@@ -7,6 +7,7 @@ import socket
 #   ja lähettää sinne sanan "game".
 #
 # ###########################################
+import time
 
 class Play:
 
@@ -15,13 +16,64 @@ class Play:
         self.port = 8001
         self.address = (hostname, port)
         self.FORMAT = 'utf-8'
+        self.HEADER = 64
 
-    def main(self):
+    def main(self, username, password):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
             sock.connect(self.address)
             mes = "game"
             message = mes.encode(self.FORMAT)
             sock.send(message)
+            time.sleep(1)
+            message = username.encode(self.FORMAT)
+            sock.send(message)
+            time.sleep(1)
+            message = password.encode(self.FORMAT)
+            sock.send(message)
+            time.sleep(1)
+            print("Haluatko pelata tekoälyä vastaa?  (K, E)\n")
+            while True:
+                liike = input()
+                if liike == "K":
+                    message1 = "0"
+                    break
+                elif liike == "E":
+                    message1 = "1"
+                    break
+            message1 = message1.encode(self.FORMAT)
+            sock.send(message1)
+            viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            while not viesti:
+                viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            print(viesti)
+            viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            while not viesti:
+                viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            print(viesti)
+            viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            while not viesti:
+                viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            print(viesti)
+            print("Anna liikkeesi (R, P, S)\n")
+            while True:
+                liike = input()
+                if liike == "R" or liike == "S" or liike == "P":
+                    break
+            message = liike.encode(self.FORMAT)
+            sock.send(message)
+            time.sleep(1)
+            print("Vastustajan liike\n")
+            time.sleep(1)
+            viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            while not viesti:
+                viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            print(viesti)
+
+            print("\n")
+            viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            while not viesti:
+                viesti = sock.recv(self.HEADER).decode(self.FORMAT)
+            print(viesti)
             # Receive data from server (i.e., current server time)
             print("JEE!")
-        return 0
+            return 0

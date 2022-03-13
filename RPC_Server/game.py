@@ -1,5 +1,5 @@
 import error_handler
-
+import random
 class Game:
 
     def __init__(self, p1, p2):
@@ -10,15 +10,36 @@ class Game:
         self.p2move = None
         self.outcome = None
         self._error = error_handler.ErrorHandler()
-        
-    
+
+    def insert_p2(self, p2):
+        self.p2 = p2
+
     def p1_move(self, move):
+
         self.p1move = move
-    
+
+        return self.p1move
+
     def p2_move(self, move):
+
         self.p2move = move
 
-    def solve_game(self, ):
+        return self.p2move
+
+    def ai_p2_move(self):
+        move = random.randint(0,2)
+        if move == 0:
+            self.p2move = "R"
+        elif move == 1:
+            self.p2move = "P"
+        elif move == 2:
+            self.p2move = "S"
+        else:
+            print("GAME PROBLEM")
+
+        return self.p2move
+
+    def solve_game(self):
         # tarviiko try-except virheenkäsittelyä? voiko mennä mikään pieleen?
         # jos ei, niin voi poistaa import ja self._error lauseen __init__ metodista
         if self.p1move == "R":
@@ -47,6 +68,11 @@ class Game:
             elif self.p2move == "S":
                 self.outcome = "Tie"
 
-        
         return self.outcome
+
+    def game_finished(self):
+        if self.outcome:
+            return True
+        else:
+            return False
 

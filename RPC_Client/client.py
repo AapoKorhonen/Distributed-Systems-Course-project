@@ -26,6 +26,8 @@ class Client:
         self.play = play.Play(hostname, port)
         self.exit = exit_client.ExitClient(hostname, port)
         self._error = error_handler.ErrorHandler()
+        self._username = None
+        self._password = None
     
 
     def _main(self):
@@ -47,16 +49,29 @@ class Client:
             while connected:
                 valinta = input()
                 if valinta == "login":
-                    self.login.main()
+                    self._username, self._password = self.login.main()
                 elif valinta == "register":
                     self.register.main()
                 elif valinta == "stats":
-                    self.stats.main()
+                    if self._username == None:
+                        print("Kirjaudu sisään ensin\n")
+                    else:
+                        self.stats.main(self._username, self._password)
                 elif valinta == "play":
-                    self.play.main()
+                    if self._username == None:
+                        print("Kirjaudu sisään ensin\n")
+                    else:
+                        self.play.main(self._username, self._password)
                 elif valinta == "exit":
                     self.exit.main()
                     connected =False
+
+                print("\nValitse:\n"
+                      "login\n"
+                      "register\n"
+                      "stats\n"
+                      "play\n"
+                      "exit\n")
         
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
