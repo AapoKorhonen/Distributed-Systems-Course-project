@@ -37,6 +37,7 @@ class Client:
         # sitä toimintoa vastaava olio.
         ###########################################
 
+
         try:
             connected = True
             print("Valitse:\n"

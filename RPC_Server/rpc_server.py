@@ -42,13 +42,14 @@ class RPCServer:
         # game_generaattoriin ja siitä eteenpäin
         ##########################
         try:
+            self.log_system.log("_handle_game")
             name = connection.recv(self.HEADER).decode(self.FORMAT)
             while not name:
                 name = connection.recv(self.HEADER).decode(self.FORMAT)
             salasana = connection.recv(self.HEADER).decode(self.FORMAT)
             while not salasana:
                 salasana = connection.recv(self.HEADER).decode(self.FORMAT)
-            print("_handle_game")
+            
             if self._authentication.check_authentication(name, salasana):
                 user1 = user.User(name, connection, address)
                 opponent = connection.recv(self.HEADER).decode(self.FORMAT)
@@ -61,6 +62,8 @@ class RPCServer:
 
                 while not game.game_finished():
                     time.sleep(1)
+
+
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
             respond_body = "Error in _handle_game method!"
@@ -79,7 +82,7 @@ class RPCServer:
         try:
             HEADER = 64
             FORMAT = 'utf-8'
-            print("_handle_register")
+            self.log_system.log("_handle_register")
             name = connection.recv(HEADER).decode(FORMAT)
             while not name:
                 name = connection.recv(HEADER).decode(FORMAT)
@@ -114,7 +117,7 @@ class RPCServer:
         try:
             HEADER = 64
             FORMAT = 'utf-8'
-            print("_handle_login")
+            self.log_system.log("_handle_login")
             name = connection.recv(HEADER).decode(FORMAT)
             while not name:
                 name = connection.recv(HEADER).decode(FORMAT)
@@ -126,7 +129,10 @@ class RPCServer:
                 user1.send_message("KIRJAUTUMINEN ONNISTUI")
             else:
                 user1 = user.User(name, connection, address)
+
                 user1.send_message("VIRHE KIRJAUTUMISESSA")
+                self.log_system.log("kirjautumis virhe")
+
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
@@ -146,7 +152,7 @@ class RPCServer:
         # lähetetään ne clientille
         ##########################
         try:
-            print("_handle_stats")
+            self.log_system.log("_handle_stats")
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
@@ -176,7 +182,7 @@ class RPCServer:
                 message = connection.recv(HEADER).decode(FORMAT)
                 while not message:
                     message = connection.recv(HEADER).decode(FORMAT)
-                print(message)
+                self.log_system.log(message)
                 if message == "register":
                     self._handle_register(connection, address)
                 elif message == "login":
@@ -187,12 +193,12 @@ class RPCServer:
                     self._handle_stats(connection, address)
                 elif message == "exit":
                     connected = False
-                    print("operated exit")
+                    self.log_system.log(f"Exit operated for client {address}")
                 else:
-                    print("ONGELMA")
+                    self.log_system.log("ONGELMA: Valinta tehty väärin")
 
             connection.close()
-            print("connection closed")
+            self.log_system.log(f"Connection closed: {address}")
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
@@ -212,6 +218,7 @@ class RPCServer:
                     conn, addr = sock.accept()
                     thread = threading.Thread(target=self._handle_thread, args=(conn,addr))
                     thread.start()
+                    #self.log_system.log(f"_ACTIVE CONNECTIONS_: {threading.activeCount() -1 }") Kokeilin, mutta tuli outoja lukuja :)
         except OSError as e:
             respond_body = "OSError in _create_socket method!"
             self._error.print_error(e, respond_body)
