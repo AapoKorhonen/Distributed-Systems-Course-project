@@ -34,30 +34,7 @@ class Client:
         # Luetaan käyttäjän syöte ja "käynnistetään"
         # sitä toimintoa vastaava olio.
         ###########################################
-<<<<<<< HEAD
-        #connected = True
-        print("Valitse:\n"
-              "login\n"
-              "register\n"
-              "stats\n"
-              "play\n"
-              "exit\n")
-        
-        while True:
-            valinta = input()
-            if valinta == "login":
-                self.login.main()
-            elif valinta == "register":
-                self.register.main()
-            elif valinta == "stats":
-                self.stats.main()
-            elif valinta == "play":
-                self.play.main()
-            elif valinta == "exit":
-                self.exit.main()
-                #connected = False
-=======
->>>>>>> 537cd2c27b452062f7d85ef011085a9d059f9d6f
+
 
         try:
             connected = True
