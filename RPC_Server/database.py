@@ -174,10 +174,18 @@ class Database:
     
         try:
             conn = sqlite3.connect(self.filename)
-            cursor =conn.cursor()
+            cursor = conn.cursor()
             komento = """SELECT COUNT(OUTCOME) FROM GAMES WHERE OUTCOME = ?;"""
             cursor.execute(komento, (username,))
-            ID = int(cursor.fetchall()[0][0])
+            wins = int(cursor.fetchall()[0][0])
+
+            conn.commit()
+
+            conn = sqlite3.connect(self.filename)
+            cursor = conn.cursor()
+            komento = """SELECT COUNT(OUTCOME) FROM GAMES WHERE PLAYER1 = ? OR PLAYER2 = ?;"""
+            cursor.execute(komento, (username, username))
+            games = int(cursor.fetchall()[0][0])
 
             conn.commit()
         
@@ -187,7 +195,7 @@ class Database:
             self._error.print_error(e, respond_body)
             return 0
 
-        return ID
+        return wins, games
         
         
     def _check_credentials(self, username, password):
@@ -200,8 +208,9 @@ class Database:
             cursor.execute(komento, (username, ))
             password_test = cursor.fetchall()
             conn.commit()
-
-            if password == password_test[0][0]:
+            if len(password_test) == 0:
+                arvo = False
+            elif password == password_test[0][0]:
                 arvo = True
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
