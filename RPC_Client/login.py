@@ -1,5 +1,5 @@
 import socket
-
+import time
 ###########################################
 # LOGIN Class
 # Käsittelee login toiminnot
@@ -31,9 +31,9 @@ class Login:
             print("Kirjaudutaan käyttäjä tilillesi:\n")
 
             username = input("Anna käyttäjänimi\n")
-            password = input("Salasana\n")
             message = username.encode(self.FORMAT)
             sock.send(message)
+            password = input("Salasana\n")
             message = password.encode(self.FORMAT)
             sock.send(message)
             HEADER = 64

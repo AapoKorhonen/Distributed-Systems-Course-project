@@ -27,9 +27,9 @@ class Register:
             print("JEE!")
 
             name = input("Käyttäjänimi\n")
-            password = input("Salasana\n")
             message = name.encode(self.FORMAT)
             sock.send(message)
+            password = input("Salasana\n")
             message = password.encode(self.FORMAT)
             sock.send(message)
 
