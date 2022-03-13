@@ -30,6 +30,10 @@ class Stats:
                 sock.send(username.encode(self.FORMAT))
                 time.sleep(5)
                 sock.send(password.encode(self.FORMAT))
+                tulokset = sock.recv(self.HEADER).decode(self.FORMAT)
+                while not tulokset:
+                    tulokset = sock.recv(self.HEADER).decode(self.FORMAT)
+                print(tulokset)
 
         except Exception as e:
             respond_body = "Error in Stats.main method!"
