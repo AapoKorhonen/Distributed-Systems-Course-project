@@ -34,7 +34,7 @@ class Database:
         except Exception as e:
             respond_body = "Error in Database._make_tables method!"
             self._error.print_error(e, respond_body)
-            print("Taulukot jo olemassa")
+            print("Tables already exist!")
             self.id = self._init_id()
 
     def _init_id(self):
@@ -68,7 +68,7 @@ class Database:
         except Exception as e:
             respond_body = "Error in Database._get_ID method!"
             self._error.print_error(e, respond_body)
-            print("VIRHE init_id")
+            print("Error init_id")
             ID = 0
             
         return ID

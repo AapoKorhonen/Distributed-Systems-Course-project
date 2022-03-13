@@ -164,7 +164,9 @@ class RPCServer:
             if self._authentication.check_authentication(name, salasana):
                 user1 = user.User(name, connection, address)
                 wins, games = self._database._get_game_info_wins_user(name)
-                user1.send_message("VIRHE KIRJAUTUMISESSA")
+                user1.send_message("Wins: " + str(wins) + "\nGames: " + str(games) + "\n")
+
+                #user1.send_message("Number of wins: {wins}\nNumber of games: {games}".format(str(wins),str(games)))
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
@@ -207,7 +209,7 @@ class RPCServer:
                     connected = False
                     self.log_system.log(f"Exit operated for client {address}")
                 else:
-                    self.log_system.log("ONGELMA: Valinta tehty väärin")
+                    self.log_system.log("PROBLEM: Wrong context name!")
 
             connection.close()
             self.log_system.log(f"Connection closed: {address}")

@@ -9,7 +9,7 @@ class CommunicationHandler:
         self.connection = conn
         self.address = addr
         self._error = error_handler.ErrorHandler()
-        print("CommunicationHandler valmistettu")
+        print("CommunicationHandler created")
         
         
         
