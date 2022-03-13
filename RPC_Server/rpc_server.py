@@ -152,7 +152,19 @@ class RPCServer:
         # lähetetään ne clientille
         ##########################
         try:
+            HEADER = 64
+            FORMAT = 'utf-8'
             self.log_system.log("_handle_stats")
+            name = connection.recv(HEADER).decode(FORMAT)
+            while not name:
+                name = connection.recv(HEADER).decode(FORMAT)
+            salasana = connection.recv(HEADER).decode(FORMAT)
+            while not salasana:
+                salasana = connection.recv(HEADER).decode(FORMAT)
+            if self._authentication.check_authentication(name, salasana):
+                user1 = user.User(name, connection, address)
+                wins, games = self._database._get_game_info_wins_user(name)
+                user1.send_message("VIRHE KIRJAUTUMISESSA")
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
