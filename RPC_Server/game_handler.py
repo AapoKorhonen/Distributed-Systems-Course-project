@@ -48,7 +48,7 @@ class GameHandler:
         try:
             if self._opponent == 0:
 
-                self._player1.send_message("Peli alkaa, anna liikkeesi\n")
+                self._player1.send_message("Game starts! Give your move.\n")
                 move = self._player1.recieve_message()
                 move1 = self._game.p1_move(move)
                 move2 = self._game.ai_p2_move()
@@ -59,16 +59,16 @@ class GameHandler:
                 time.sleep(3)
 
                 if self.winner == self._player1.get_username():
-                    self._player1.send_message("Voitit pelin\n")
+                    self._player1.send_message("You won the game!\n")
                 elif self.winner == "Tie":
-                    self._player1.send_message("Tasapeli\n")
+                    self._player1.send_message("Draw!\n")
                 else:
-                    self._player1.send_message("Hävisit pelin\n")
+                    self._player1.send_message("You lost the game!\n")
                 self._create_db_object(self._player1.get_username(), "AI", self.winner)
             elif self._opponent == 1:
 
-                self._player1.send_message("Peli alkaa, anna liikkeesi\n")
-                self._player2.send_message("Peli alkaa, anna liikkeesi\n")
+                self._player1.send_message("Game starts! Give your move.\n")
+                self._player2.send_message("Game starts! Give your move.\n")
 
                 move1 = self._player1.recieve_message()
                 move2 = self._player2.recieve_message()
@@ -86,14 +86,14 @@ class GameHandler:
                 time.sleep(3)
 
                 if self.winner == self._player1.get_username():
-                    self._player1.send_message("Voitit pelin\n")
-                    self._player2.send_message("Hävisit pelin\n")
+                    self._player1.send_message("You won the game!\n")
+                    self._player2.send_message("You lost the game!\n")
                 elif self.winner == "Tie":
-                    self._player1.send_message("Tasapeli\n")
-                    self._player2.send_message("Tasapeli\n")
+                    self._player1.send_message("Draw!\n")
+                    self._player2.send_message("Draw!\n")
                 else:
-                    self._player1.send_message("Hävisit pelin\n")
-                    self._player2.send_message("Voitit pelin\n")
+                    self._player1.send_message("You lost the game!\n")
+                    self._player2.send_message("You won the game!\n")
 
                 self._create_db_object(self._player1.get_username(), self._player2.get_username(), self.winner)
 

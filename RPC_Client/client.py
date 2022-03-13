@@ -54,12 +54,12 @@ class Client:
                     self.register.main()
                 elif valinta == "stats":
                     if self._username == None:
-                        print("Kirjaudu sisään ensin\n")
+                        print("Login first!\n")
                     else:
                         self.stats.main(self._username, self._password)
                 elif valinta == "play":
                     if self._username == None:
-                        print("Kirjaudu sisään ensin\n")
+                        print("Login first!\n")
                     else:
                         self.play.main(self._username, self._password)
                 elif valinta == "exit":

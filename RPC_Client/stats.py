@@ -1,4 +1,5 @@
 import socket
+import time
 
 ###########################################
 # STATS Class
@@ -16,6 +17,7 @@ class Stats:
         self.port = 8001
         self.address = (hostname, port)
         self.FORMAT = 'utf-8'
+        self.HEADER = 64
 
     def main(self, username, password):
         try:
@@ -24,8 +26,10 @@ class Stats:
                 mes = "stats"
                 message = mes.encode(self.FORMAT)
                 sock.send(message)
-                # Receive data from server (i.e., current server time)
-                print("JEE!")
+                time.sleep(5)
+                sock.send(username.encode(self.FORMAT))
+                time.sleep(5)
+                sock.send(password.encode(self.FORMAT))
 
         except Exception as e:
             respond_body = "Error in Stats.main method!"
