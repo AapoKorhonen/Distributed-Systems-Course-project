@@ -3,6 +3,7 @@ import game
 import error_handler
 import game
 import time
+import game_log
 class GameHandler:
 
     def __init__(self, database, p1, opponent, game):
@@ -16,6 +17,7 @@ class GameHandler:
         self._opponent = opponent
         self._gameID = self._database.get_ID()
         self.winner = None
+        self._log = game_log.GameLog("gamelog.txt")
 
     def initialize_players(self, p1 =None, p2=None):
         try:
@@ -30,10 +32,9 @@ class GameHandler:
             respond_body = "Error in GameHandler._initialize_players method!"
             self._error.print_error(e, respond_body)
 
+
     def _create_db_object(self, p1, p2, outcome):
         #kutsuu databasea ja luo sinne uuden objektin
-        #__gameID = self.db.----#1.luo database funktiolla uuden ID
-        #self.db.-----(gameID, p1, p2, outcome) #luo uuden objektin
         try:
             self._database._insert_game_history(self._gameID, p1, p2, outcome)
 
@@ -41,6 +42,7 @@ class GameHandler:
         except Exception as e:
             respond_body = "Error in GameHandler._create_db_object method!"
             self._error.print_error(e, respond_body)
+
 
     def main_(self):
         try:
@@ -52,6 +54,8 @@ class GameHandler:
                 move2 = self._game.ai_p2_move()
                 self._player1.send_message(move2)
                 self.winner = self._game.solve_game()
+                self._log.write_gamelog(self._player1.get_username() + ": " + move1 + ", AI: " + move2 + ", Winner: " + self.winner + "\n")
+                
                 time.sleep(3)
 
                 if self.winner == self._player1.get_username():
@@ -76,7 +80,9 @@ class GameHandler:
                 self._player2.send_message(move1)
 
                 self.winner = self._game.solve_game()
-
+                self._log.write_gamelog(self._player1.get_username() + ": " + move1 + ", "+
+                     self._player2.get_username() +" : " + move2 + 
+                     ", Winner: " + self.winner + "\n")
                 time.sleep(3)
 
                 if self.winner == self._player1.get_username():
