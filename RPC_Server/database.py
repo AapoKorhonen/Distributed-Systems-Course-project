@@ -36,7 +36,6 @@ class Database:
             self._error.print_error(e, respond_body)
             print("Taulukot jo olemassa")
             self.id = self._init_id()
-            
 
     def _init_id(self):
         
@@ -46,9 +45,9 @@ class Database:
             komento = """SELECT ID FROM GAMES 
                         WHERE ID IS (SELECT MAX(ID) FROM GAMES)"""
             cursor.execute(komento)
-            ID = int(cursor.fetchall())
+            ID = cursor.fetchall()
+            ID = int(ID[0][0]) + 1
             conn.commit()
-            print("Onnistui")
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
@@ -58,7 +57,7 @@ class Database:
         
         return ID
      
-    def _get_ID(self):
+    def get_ID(self):
         
         try:
             with self._lock:
@@ -103,7 +102,6 @@ class Database:
             conn = sqlite3.connect(self.filename)
             cursor = conn.cursor()
             datat = (ID, p1, p2, outcome)
-            
             komento = """INSERT INTO GAMES
                               (ID, PLAYER1, PLAYER2, OUTCOME) 
                               VALUES (?, ?, ?, ? );"""
@@ -202,11 +200,10 @@ class Database:
             cursor.execute(komento, (username, ))
             password_test = cursor.fetchall()
             conn.commit()
-            print(password_test[0][0])
+
             if password == password_test[0][0]:
-            
                 arvo = True
-            
+
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
             respond_body = "Error in Database._check_credentials method! \

@@ -17,12 +17,17 @@ class Stats:
         self.address = (hostname, port)
         self.FORMAT = 'utf-8'
 
-    def main(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
-            sock.connect(self.address)
-            mes = "stats"
-            message = mes.encode(self.FORMAT)
-            sock.send(message)
-            # Receive data from server (i.e., current server time)
-            print("JEE!")
+    def main(self, username, password):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+                sock.connect(self.address)
+                mes = "stats"
+                message = mes.encode(self.FORMAT)
+                sock.send(message)
+                # Receive data from server (i.e., current server time)
+                print("JEE!")
+
+        except Exception as e:
+            respond_body = "Error in Stats.main method!"
+            self._error.print_error(e, respond_body)
         return 0

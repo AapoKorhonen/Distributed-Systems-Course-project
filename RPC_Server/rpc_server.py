@@ -15,7 +15,8 @@ import communication_handler
 import game_generator
 import threading
 import log
-
+import authentication_handler
+import time
 
 class RPCServer:
     def __init__(self, pem, key):
@@ -24,8 +25,12 @@ class RPCServer:
         self._key = key
         self._error = error_handler.ErrorHandler()
         self.log_system = log.Log()
+        self._database = database.Database("database.db")
+        self._authentication = authentication_handler.AuthenticationHandler(self._database)
+        self._game_generator = game_generator.GameGenerator(self._database)
 
-
+        self.HEADER = 64
+        self.FORMAT = 'utf-8'
 
     def _handle_game(self, connection, address):
         ##########################
@@ -37,8 +42,25 @@ class RPCServer:
         # game_generaattoriin ja siitä eteenpäin
         ##########################
         try:
+            name = connection.recv(self.HEADER).decode(self.FORMAT)
+            while not name:
+                name = connection.recv(self.HEADER).decode(self.FORMAT)
+            salasana = connection.recv(self.HEADER).decode(self.FORMAT)
+            while not salasana:
+                salasana = connection.recv(self.HEADER).decode(self.FORMAT)
             print("_handle_game")
+            if self._authentication.check_authentication(name, salasana):
+                user1 = user.User(name, connection, address)
+                opponent = connection.recv(self.HEADER).decode(self.FORMAT)
+                while not opponent:
+                    opponent = connection.recv(self.HEADER).decode(self.FORMAT)
+                if opponent == "0":
+                    game = self._game_generator.main_(user1, 0)
+                elif opponent == "1":
+                    game = self._game_generator.main_(user1, 1)
 
+                while not game.game_finished():
+                    time.sleep(1)
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
             respond_body = "Error in _handle_game method!"
@@ -64,9 +86,10 @@ class RPCServer:
             salasana = connection.recv(HEADER).decode(FORMAT)
             while not salasana:
                 salasana = connection.recv(HEADER).decode(FORMAT)
-            print(name)
-            print(salasana)
-            self._database.insert_new_user(name, salasana)
+            if self._database.insert_new_user(name, salasana) == 0:
+                connection.send("REKISTERÖINTI ONNISTUI\n".encode(FORMAT))
+            else:
+                connection.send("REKISTERÖINTI EI ONNISTUNUT\n".encode(FORMAT))
         
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
@@ -98,13 +121,12 @@ class RPCServer:
             salasana = connection.recv(HEADER).decode(FORMAT)
             while not salasana:
                 salasana = connection.recv(HEADER).decode(FORMAT)
-            if self._database._check_credentials(name, salasana):
+            if self._authentication.check_authentication(name, salasana):
                 user1 = user.User(name, connection, address)
-                user1._send_message("KIRJAUTUMINEN ONNISTUI")
+                user1.send_message("KIRJAUTUMINEN ONNISTUI")
             else:
                 user1 = user.User(name, connection, address)
-                user1._send_message("VIRHE KIRJAUTUMISESSA")
-                print("kaka")
+                user1.send_message("VIRHE KIRJAUTUMISESSA")
 
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
@@ -177,7 +199,6 @@ class RPCServer:
             respond_body = "Error in _handle_thread method!"
             self._error.print_error(e, respond_body)
 
-
     def _create_socket(self): # leading '_' in the method name distinguishes 
                                 # private and public methods
         try:
@@ -197,18 +218,16 @@ class RPCServer:
         except Exception as e:
             respond_body = "Error in _create_socket method!"
             self._error.print_error(e, respond_body)
-    
-
 
     def _create_database(self):
         try:
-            self._database = database.Database("database.db")
+            #self._database = database.Database("database.db")
+            #self._authentication = authentication_handler.AuthenticationHandler(self._database)
+            print("\n")
         # Muista lisätä tarkempi virheenkäsittely tarvittaessa!!!
         except Exception as e:
             respond_body = "Error in _create_database method!"
             self._error.print_error(e, respond_body)
-
-
 
     def _main(self): 
         """This method calls all the necessary classes to 
@@ -219,7 +238,7 @@ class RPCServer:
             server._create_database()
             # you need to initialize other handlers before opening the socket connection
             self.log_system.log("Creating game generator...")
-
+            #self._game_generator = game_generator.GameGenerator(self._database)
             self.log_system.log("Creating socket connection...")
             server._create_socket()
 
