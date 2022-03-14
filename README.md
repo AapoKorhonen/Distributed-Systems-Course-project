@@ -21,3 +21,20 @@ login.py
 play.py
 register.py
 stats.py
+
+
+
+ docker build -t python_client .
+ 
+ VAIHDA DOCKERFILE
+ 
+  docker build -t python_server .
+ 
+ SERVERI PYÖRIMÄÄN CONTAINERIIN
+ 
+ docker run -it -p 8001:8001 python_server   
+ 
+ CLIENT PYÖRIMÄÄN
+ 
+ docker run -it --network="host" python_client
+ 
