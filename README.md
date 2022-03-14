@@ -7,7 +7,7 @@ https://www.freecodecamp.org/news/python-property-decorator/ # @property lesson
 https://pythonbasics.org/webserver/
 
 
-#Instructions
+# Instructions
 
 There are two parts to this program, a server and a client. The server can be found in the folder RPC_Server and in the file rpc_server.py. Just run it (python rpc_serve.py)
 
@@ -15,7 +15,7 @@ The client is in folder RPC_Client and in the file client.py.
 
 
 
-#Docker
+# Docker
 
  docker build -t python_client .
  
