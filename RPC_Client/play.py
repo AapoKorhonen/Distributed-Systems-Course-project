@@ -28,7 +28,7 @@ class Play:
             message = password.encode(self.FORMAT)
             sock.send(message)
             time.sleep(1)
-            print("Do you want to play agains AI?  (Y, N)\n")
+            print("Do you want to play against AI?  (Y, N)\n")
             while True:
                 liike = input()
                 if liike == "Y":

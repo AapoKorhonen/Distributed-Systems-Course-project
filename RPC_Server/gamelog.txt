@@ -1,3 +1,0 @@
-homo: R, AI: S, Winner: homo
-homo: S, Elmoska : P, Winner: homo
-homo: S, AI: R, Winner: AI

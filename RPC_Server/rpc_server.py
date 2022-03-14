@@ -75,7 +75,7 @@ class RPCServer:
             while not salasana:
                 salasana = connection.recv(HEADER).decode(FORMAT)
             if self._database.insert_new_user(name, salasana) == 0:
-                connection.send("Registration failed!\n".encode(FORMAT))
+                connection.send("Registration succeeded!\n".encode(FORMAT))
             else:
                 connection.send("Registration failed!\n".encode(FORMAT))
 
@@ -101,12 +101,12 @@ class RPCServer:
                 salasana = connection.recv(HEADER).decode(FORMAT)
             if self._authentication.check_authentication(name, salasana):
                 user1 = user.User(name, connection, address)
-                user1.send_message("Registration succeeded!")
+                user1.send_message("Login succeeded!")
             else:
                 user1 = user.User(name, connection, address)
 
-                user1.send_message("Error in registration!")
-                self.log_system.log("Error in registration!")
+                user1.send_message("Error in Login!")
+                self.log_system.log("Error in Login!")
 
         except Exception as e:
             respond_body = "Error in _handle_login method!"
@@ -203,7 +203,6 @@ class RPCServer:
         try:
             server = RPCServer(self._pem, self._key)
             self.log_system.log("Initializing database...")
-            server._create_database()
             self.log_system.log("Creating socket connection...")
             server._create_socket()
 

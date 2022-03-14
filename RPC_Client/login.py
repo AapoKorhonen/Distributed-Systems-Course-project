@@ -31,7 +31,7 @@ class Login:
             while not name:
                 name = sock.recv(HEADER).decode(self.FORMAT)
             print(name)
-            if name == "Registration succeeded!":
+            if name == "Login succeeded!":
                 return username, password
             return None, None
         return 0

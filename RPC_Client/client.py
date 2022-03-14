@@ -29,7 +29,7 @@ class Client:
 
         try:
             connected = True
-            print("Valitse:\n"
+            print("Main menu:\n"
                   "login\n"
                   "register\n"
                   "stats\n"
@@ -55,7 +55,7 @@ class Client:
                     self.exit.main()
                     connected = False
 
-                print("\nValitse:\n"
+                print("\nMain menu:\n"
                       "login\n"
                       "register\n"
                       "stats\n"
