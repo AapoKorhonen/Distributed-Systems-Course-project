@@ -1,13 +1,10 @@
+"""This class handles the play/game functions."""
+
 import socket
 
-###########################################
-# PLAY Class
-# Käsittelee play/game (PELAAMISEN)  toiminnot
-# Tällä hetkellä vain ottaa yhteyttä serveriin
-#   ja lähettää sinne sanan "game".
-#
-# ###########################################
+
 import time
+
 
 class Play:
 
@@ -31,13 +28,13 @@ class Play:
             message = password.encode(self.FORMAT)
             sock.send(message)
             time.sleep(1)
-            print("Haluatko pelata tekoälyä vastaa?  (K, E)\n")
+            print("Do you want to play agains AI?  (Y, N)\n")
             while True:
                 liike = input()
-                if liike == "K":
+                if liike == "Y":
                     message1 = "0"
                     break
-                elif liike == "E":
+                elif liike == "N":
                     message1 = "1"
                     break
             message1 = message1.encode(self.FORMAT)
@@ -54,7 +51,7 @@ class Play:
             while not viesti:
                 viesti = sock.recv(self.HEADER).decode(self.FORMAT)
             print(viesti)
-            print("Anna liikkeesi (R, P, S)\n")
+            print("Give your move (R, P, S)\n")
             while True:
                 liike = input()
                 if liike == "R" or liike == "S" or liike == "P":
@@ -62,7 +59,7 @@ class Play:
             message = liike.encode(self.FORMAT)
             sock.send(message)
             time.sleep(1)
-            print("Vastustajan liike\n")
+            print("Opponents move\n")
             time.sleep(1)
             viesti = sock.recv(self.HEADER).decode(self.FORMAT)
             while not viesti:
@@ -74,6 +71,4 @@ class Play:
             while not viesti:
                 viesti = sock.recv(self.HEADER).decode(self.FORMAT)
             print(viesti)
-            # Receive data from server (i.e., current server time)
-            print("JEE!")
             return 0

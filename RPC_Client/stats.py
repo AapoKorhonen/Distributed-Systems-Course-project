@@ -1,14 +1,8 @@
+"""This class handles the stats functions at the client side. It gets the stats from the server. """
+
 import socket
 import time
 
-###########################################
-# STATS Class
-# Käsittelee stats toiminnot (TILASTOJEN HAKEMISEN SERVERILTÄ)
-# (EI VÄLTTÄMÄTÖNTÄ JOS EI EHDITÄ TEHDÄ KUNTOON)
-# Tällä hetkellä vain ottaa yhteyttä serveriin
-#   ja lähettää sinne sanan "register".
-#
-# ###########################################
 
 class Stats:
 

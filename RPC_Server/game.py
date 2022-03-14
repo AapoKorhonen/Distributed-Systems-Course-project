@@ -1,5 +1,6 @@
 import error_handler
 import random
+
 class Game:
 
     def __init__(self, p1, p2):
@@ -40,8 +41,6 @@ class Game:
         return self.p2move
 
     def solve_game(self):
-        # tarviiko try-except virheenkäsittelyä? voiko mennä mikään pieleen?
-        # jos ei, niin voi poistaa import ja self._error lauseen __init__ metodista
         if self.p1move == "R":
             if self.p2move == "R":
                 self.outcome = "Tie"

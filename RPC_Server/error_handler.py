@@ -1,4 +1,5 @@
-# Note! There is not anything else but print errors functionality. Should there be other functionality?
+"""This class prints the server errors. It same as the class in RPC_Client folder."""
+
 
 class ErrorHandler:
     error_message = ""
@@ -37,4 +38,3 @@ class ErrorHandler:
         print(RED + additional_message)
         print(RED + "Error:", end=" ")
         print(RED + ErrorHandler.error_message)
-

@@ -1,12 +1,8 @@
+"""This class handles the client register functions. It contacts the server and sends the message
+'register'."""
+
 import socket
 
-###########################################
-# REGISTER Class
-# Käsittelee register toiminnot
-# Tällä hetkellä vain ottaa yhteyttä serveriin
-#   ja lähettää sinne sanan "register".
-#
-# ###########################################
 
 class Register:
 
@@ -23,13 +19,11 @@ class Register:
             mes = "register"
             message = mes.encode(self.FORMAT)
             sock.send(message)
-            # Receive data from server (i.e., current server time)
-            print("JEE!")
 
-            name = input("Käyttäjänimi\n")
+            name = input("Username:\n")
             message = name.encode(self.FORMAT)
             sock.send(message)
-            password = input("Salasana\n")
+            password = input("Password:\n")
             message = password.encode(self.FORMAT)
             sock.send(message)
 

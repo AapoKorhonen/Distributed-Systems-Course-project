@@ -1,9 +1,5 @@
-###########################################
-# LOG class
-# Tähän on siirretty kaikki log ominaisuuksiin liittyvät toiminnot
-# Nyt loggaus tapahtuu tämän classin välityksellä
-# Tämä on samallainen client ja server puolella
-###########################################
+"""This is a Log-class. It handles all the necessary log messages. It is the same class 
+in the server side and the client side."""
 
 class Log:
 
