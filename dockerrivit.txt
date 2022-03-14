@@ -3,7 +3,7 @@ FROM ubuntu:latest
 RUN apt update
 RUN apt install python3 -y
 
-COPY /git_tiedot/RPC_Client ./
+COPY /RPC_Client ./
 COPY Certificates ./
 
 CMD [ "python3", "./client.py"]
@@ -13,7 +13,7 @@ FROM ubuntu:latest
 RUN apt update
 RUN apt install python3 -y
 
-COPY /git_tiedot/RPC_Server ./
+COPY /RPC_Server ./
 COPY Certificates ./
 
 CMD [ "python3", "./rpc_server.py"]
